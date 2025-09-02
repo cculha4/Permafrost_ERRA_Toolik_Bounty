@@ -1,0 +1,62 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Creating figures that match what is in the introduction%%%
+%%%%%%%%%%%%%%%%by Cansu Culha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [maxRRD,maxRRDlgt,maxRRDse, RRD,se,lagt] = figtRRD_plot_years(filename,workdir,Colors,hourlimit,hourrange)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%Load data here%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Set up the Import Options and import the data
+opts = delimitedTextImportOptions("NumVariables", 3);
+
+% Specify range and delimiter
+opts.DataLines = [2, Inf];
+opts.Delimiter = "\t";
+
+% Specify column names and types
+opts.VariableNames = ["lagtime", "RRD_P1all",  "se_P1all"];
+opts.VariableTypes = ["double", "double", "double"];
+
+% Specify file level properties
+opts.ExtraColumnsRule = "ignore";
+opts.EmptyLineRule = "read";
+
+% Import the data
+cd(workdir)
+dat = readtable(filename, opts);
+
+lagt = table2array(dat(:,"lagtime"));
+RRD = table2array(dat(:,"RRD_P1all"));
+se = table2array(dat(:,"se_P1all"));
+
+if hourlimit
+    index = (lagt>=hourrange(1) & lagt<=hourrange(2));
+    maxRRD = max(RRD(index));
+    minRRD = min(RRD(index));
+    index_lagt = RRD ==maxRRD;
+    maxRRDlgt = lagt(index_lagt);
+    maxRRDse = se(index_lagt);
+else
+    maxRRD = max(RRD);
+    minRRD = min(RRD);
+    index_lagt = RRD ==maxRRD;
+    maxRRDlgt = lagt(index_lagt);
+    maxRRDse = se(index_lagt);
+end
+
+%Plot figure
+hold on
+e = errorbar(lagt,RRD,se,'-','LineWidth',6,'MarkerSize',25,'Color',Colors);
+e.CapSize = 0;
+
+% if hourlimit
+%     xline(hourrange(1),'LineWidth',3,'Color',[0.65 0.85 0.90])
+%     xline(hourrange(2),'LineWidth',3,'Color',[0.65 0.85 0.90])
+% end
+%,...
+%     "MarkerEdgeColor","blue","MarkerFaceColor",[0.65 0.85 0.90])
+
+

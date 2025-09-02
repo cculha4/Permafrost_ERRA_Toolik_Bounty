@@ -1,0 +1,131 @@
+%%%%% Change in Temperature with Depth %%%%%%
+clear all
+close all
+
+years_available = 1995:2020;
+
+%We have two data sources, over different times. One is a Daily and the other is an hourly take. Since, we do not need hourly resolution, I will use the pre-existing daily average data. 
+txtname = 'UK_synthesized_soil.txt';
+txtsaving = 'UK_synthesized_ActiveLayer_data.txt';
+matsaving = 'UK_ActiveLayer.mat';
+workdir   = '/Users/cculha/Documents/Polybox_ETH/Permafrost/Upper Kuparuk River Basin Alaska_river/data/';
+workdirERRA = '/Users/cculha/Documents/git_research/Permafrost_ERRA/Permafrost_ERRA/datERRA/UK';
+workdir_s_ex = '/Users/cculha/Documents/Polybox_ETH/Permafrost/Upper Kuparuk River Basin Alaska_river/data/soil data/resource_map_doi_10_18739_A29P2W70H/data';
+workdir_s = '/Users/cculha/Documents/Polybox_ETH/Permafrost/Upper Kuparuk River Basin Alaska_river/data/soil data/';
+filename_d = 'UpperKuparuk_Historical_Discharge_1993_2018_2018jul17.csv';
+filename_s_uk = 'uk1994_2010td_simple.csv';
+writetables = true;
+makefigs = true;
+printfig  = false;
+
+ cd(workdir_s_ex)
+%% Set up the Import Options and import the data
+opts = delimitedTextImportOptions("NumVariables", 13);
+
+% Specify range and delimiter
+opts.DataLines = [1, Inf];
+opts.Delimiter = ",";
+
+% Specify column names and types
+opts.VariableNames = ["DateTimeAST", "CmDepthSoilTemperaturedegreesC", "CmDepthSoilTemperaturedegreesC1", ...
+    "CmDepthSoilTemperaturedegreesC2", "CmDepthSoilTemperaturedegreesC3", "CmDepthSoilTemperaturedegreesC4",...
+    "CmDepthSoilTemperaturedegreesC5", "CmDepthSoilTemperaturedegreesC6", "CmDepthSoilTemperaturedegreesC7",...
+    "CmDepthSoilTemperaturedegreesC8", "CmDepthSoilTemperaturedegreesC9", "CmDepthSoilTemperaturedegreesC10", ...
+    "CmDepthSoilTemperaturedegreesC11"];
+opts.VariableTypes = ["datetime", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
+
+% Specify file level properties
+opts.ExtraColumnsRule = "ignore";
+opts.EmptyLineRule = "read";
+
+% Specify variable properties
+opts = setvaropts(opts, "DateTimeAST", "InputFormat", "MM/dd/yyyy HH:mm");
+
+% Import the data
+M_ = readtable(filename_s_uk, opts);
+%MANUAL: I realized the first line is error so lets delete that
+M_(1,:) = [];
+%MANUEL: Some dates MAY not read by Matlab, so lets add those days
+%back in
+missingdate = isnan(decyear(M_.DateTimeAST));
+missingdate_index = find(missingdate);
+if length(missingdate_index)>1
+    for i = 1:length(missingdate_index)
+        j = missingdate_index(i);                         %index of the missing value in M_
+        dtt = M_.DateTimeAST(j-1)-M_.DateTimeAST(j-2);  %time step from the previous times
+        M_.DateTimeAST(j) = M_.DateTimeAST(j-1)+dtt;    %fill in the missing days
+        %TEST: if there is a date in the following point, does it match
+        %our dt stepping algorithm?
+        if j+1~= missingdate_index(i+1)                   %is the next i index the same as the missing index?
+            if M_.DateTimeAST(j) + dtt ~= M_.DateTimeAST(i+1)
+                error('STOP: missing data algorithm failed')
+            end
+        end
+        dttold = dtt;
+        if dttold ~= dtt
+            error('dtt changed')
+        end
+    end
+end
+
+[trash_, index_trash] = unique(M_.DateTimeAST,'rows');               %take unique dates, but notice that trash_ is a single column
+M_trash = M_(index_trash,:);                                           %so we take all the rows that are in the table
+missingdate = isnan(decyear(M_trash.DateTimeAST));
+missingdate_index = find(missingdate);
+if missingdate_index>0
+    M_trash(missingdate_index,:) = [];          %if data is still missing, remove row
+end
+M = M_trash;
+Temp_depth = table2array(M(:,2:end));
+Temp_depth(Temp_depth > 50) = NaN;                                              %remove bad data
+
+t_m = month(M.DateTimeAST);
+t_d = day(M.DateTimeAST);
+t_y = year(M.DateTimeAST);
+
+time = M.DateTimeAST;
+t_     = decyear(time);
+
+
+data = [t_m,t_d,Temp_depth];
+
+depthAL = nan(1,numel(t_)); 
+depths_NO = 5:5:60; 
+
+%Take weekly average of 
+% Define the number of hours in a week
+days_per_week = 7;
+% Reshape the data into a matrix with one week per column
+num_days = floor(length(t_)/days_per_week);
+time_matrix = reshape(t_(1:num_days*days_per_week), days_per_week, num_days);
+% Calculate the mean of each column to get the weekly averages
+time_w = nanmean(time_matrix, 1);
+month_matrix = reshape(t_m(1:num_days*days_per_week), days_per_week, num_days);
+% Calculate the mean of each column to get the weekly averages
+month_w = nanmean(month_matrix, 1);
+
+figure
+for ll = 1:numel(depths_NO)
+DepthT = reshape(Temp_depth(1:num_days*days_per_week,ll), days_per_week, num_days);
+% Calculate the mean of each column to get the weekly averages
+DepthT_w(ll,:) = nanmean(DepthT, 1);
+dT_dt(ll,:) = (DepthT_w(ll,2:end)-DepthT_w(ll,1:end-1))./2; %delta C over delta 7 days
+
+plot(time_w(1:end-1),dT_dt(ll,:),'-')
+hold on
+end
+
+av_dT_dt = nanmean(dT_dt,1); %average of the layers
+
+year_w = floor(time_w);
+yearfrac = time_w-year_w;
+
+for ll = 1:numel(years_available)
+    indx = find(year_w == years_available(ll) & (yearfrac<decyear([0000,6,1])) & (yearfrac>decyear([0000,3,1])));
+    AV_dT_dt(ll) = nanmean(av_dT_dt(indx));
+end
+
+
+
+cd('/Users/cculha/Documents/git_research/Permafrost_ERRA/Permafrost_ERRA/datERRA/UK_years')
+save('deltaT_winterspring.mat','years_available','AV_dT_dt')
