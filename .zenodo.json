@@ -1,0 +1,10 @@
+{
+  "title": "Data and code for: Characterizing runoff response to rainfall in permafrost catchments and its implications for hydrological and biogeochemical fluxes in a warming climate",
+  "upload_type": "software",
+  "description": "Data, ERRA (Ensemble Rainfall-Runoff Analysis) scripts, and MATLAB figure code accompanying the HESS manuscript 'Characterizing runoff response to rainfall in permafrost catchments and its implications for hydrological and biogeochemical fluxes in a warming climate' (Culha et al.). Covers the Upper Kuparuk (Toolik) and Cape Bounty catchments.",
+  "creators": [
+    {"name": "Culha, Cansu"}
+  ],
+  "license": "MIT",
+  "keywords": ["permafrost", "hydrology", "rainfall-runoff", "ERRA", "Toolik", "Cape Bounty", "HESS"]
+}

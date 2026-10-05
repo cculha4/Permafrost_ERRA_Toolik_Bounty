@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "Data and code for: Characterizing runoff response to rainfall in permafrost catchments and its implications for hydrological and biogeochemical fluxes in a warming climate"
+authors:
+  - family-names: Culha
+    given-names: Cansu
+license: MIT
+repository-code: "https://github.com/cculha4/Permafrost_ERRA_Toolik_Bounty"
+keywords:
+  - permafrost
+  - hydrology
+  - rainfall-runoff
+  - ERRA
