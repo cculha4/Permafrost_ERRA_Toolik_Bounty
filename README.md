@@ -1,5 +1,7 @@
 # Permafrost_ERRA_Toolik_Bounty
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23171391.svg)](https://doi.org/10.5281/zenodo.23171391)
+
 This repository accompanies the HESS manuscript:
 
 **Characterizing runoff response to rainfall in permafrost catchments and its implications for hydrological and biogeochemical fluxes in a warming climate**
@@ -17,3 +19,7 @@ It contains the data, ERRA (Ensemble Rainfall-Runoff Analysis) scripts, and MATL
 | `matlab_toolbox/` | MATLAB functions and live scripts used to generate figures |
 | `Paper Figures/` | Figures in the main manuscript |
 | `Supplementary Figures/` | Figures in the supplement |
+
+## How to cite
+
+Culha, C. Data and code for: Characterizing runoff response to rainfall in permafrost catchments and its implications for hydrological and biogeochemical fluxes in a warming climate. Zenodo. https://doi.org/10.5281/zenodo.23171391
