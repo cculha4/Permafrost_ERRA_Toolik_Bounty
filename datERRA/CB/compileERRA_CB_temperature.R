@@ -41,7 +41,7 @@ filter_here <- ((dat$month>5)&(dat$month<9))
 ##Analyzing data
 #first analysis is to just get a runoff response distribution, runoff peaks, and 
 #comparison of discharge cbind(p, dw)
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=q, m=10, Qfilter=filter_here, agg = 2, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=q, m=5, Qfilter=filter_here, agg = 24, xknots=NULL, dt=1/24, robust = FALSE)
 #save the results through this
 fileID <- "CB/Rresults/1hr_simple_"
 with(zz, {

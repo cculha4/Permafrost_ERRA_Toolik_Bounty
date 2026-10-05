@@ -17,7 +17,7 @@ library(caTools)
 #set the library and the code
 setwd("~/Documents/GitHub/Permafrost_ERRA/datERRA/")
 rm(list=ls())
-source("ERRA_v1.03x.R")
+source("ERRA_v1.06.R")
 
 #load the data into the script
 dat <- fread("/Users/cansu/Documents/GitHub/Permafrost_ERRA/rawdata/CB_thawingdepth_dist_daily.txt", header=TRUE, sep=",",
@@ -50,7 +50,7 @@ month <- dat$months
 #ALD DOC
 filter_here <- ((dat$months>5)&(dat$months<9)&(years>2006)&(years<2012))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qdoc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qdoc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_ALD/1hr_simple_DOC_"
 with(zz, {
@@ -64,7 +64,7 @@ rm(zz,filter_here)
 #stable ALD DOC
 filter_here <- ((month>5)&(month<9)&(years>2011))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qdoc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qdoc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_stbALD/1hr_simple_DOC_"
 with(zz, {
@@ -77,7 +77,7 @@ rm(zz,filter_here)
 #ALD POC
 filter_here <- ((dat$months>5)&(dat$months<9)&(years>2006)&(years<2012))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qpoc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qpoc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_ALD/1hr_simple_POC_"
 with(zz, {
@@ -90,7 +90,7 @@ rm(zz,filter_here)
 #stable ALD POC
 filter_here <- ((month>5)&(month<9)&(years>2011))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qpoc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qpoc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_stbALD/1hr_simple_POC_"
 with(zz, {
@@ -103,7 +103,7 @@ rm(zz,filter_here)
 #ALD SSC
 filter_here <- ((dat$months>5)&(dat$months<9)&(years>2006)&(years<2012))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qssc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qssc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_ALD/1hr_simple_SSC_"
 with(zz, {
@@ -116,7 +116,7 @@ rm(zz,filter_here)
 #stable ALD SSC
 filter_here <- ((month>5)&(month<9)&(years>2011))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qssc, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qssc, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_stbALD/1hr_simple_SSC_"
 with(zz, {
@@ -128,7 +128,7 @@ with(zz, {
 #ALD TDS
 filter_here <- ((dat$months>5)&(dat$months<9)&(years>2006)&(years<2012))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qtds, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qtds, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_ALD/1hr_simple_TDS_"
 with(zz, {
@@ -141,7 +141,7 @@ rm(zz,filter_here)
 #stable ALD TDS
 filter_here <- ((dat$months>5)&(dat$months<9)&(years>2011))
 filter_here[is.na(filter_here)] <- FALSE
-zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qtds, m=2, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
+zz <- ERRA(p=ifelse((Temp>-0.5), p, 0), q=qtds, m=5, Qfilter=filter_here, agg = 1, xknots=NULL, dt=1, robust = FALSE)
 #save the results through this
 fileID <- "CB_thawingdepth_disturbed_DOC/Rresults_stbALD/1hr_simple_TDS_"
 with(zz, {
